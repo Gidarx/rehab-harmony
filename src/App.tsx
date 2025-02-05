@@ -8,6 +8,10 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import AdminDashboard from "./pages/admin/Dashboard";
+import TherapistDashboard from "./pages/therapist/Dashboard";
+import StaffDashboard from "./pages/staff/Dashboard";
+import FamilyDashboard from "./pages/family/Dashboard";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +25,48 @@ const App = () => (
           <AuthProvider>
             <Routes>
               <Route path="/auth" element={<Auth />} />
+              
+              {/* Admin routes */}
+              <Route
+                path="/admin/*"
+                element={
+                  <ProtectedRoute allowedRoles={["admin"]}>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Therapist routes */}
+              <Route
+                path="/therapist/*"
+                element={
+                  <ProtectedRoute allowedRoles={["therapist"]}>
+                    <TherapistDashboard />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Staff routes */}
+              <Route
+                path="/staff/*"
+                element={
+                  <ProtectedRoute allowedRoles={["staff"]}>
+                    <StaffDashboard />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Family routes */}
+              <Route
+                path="/family/*"
+                element={
+                  <ProtectedRoute allowedRoles={["family"]}>
+                    <FamilyDashboard />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Root route - redirects based on role */}
               <Route
                 path="/"
                 element={
@@ -29,6 +75,7 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
+              
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>
