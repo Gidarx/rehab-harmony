@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import DashboardCard from "@/components/DashboardCard";
 import Header from "@/components/Header";
+import { User, Calendar, ClipboardList } from "lucide-react";
 
 const FamilyDashboard = () => {
   const [patient, setPatient] = useState<any>(null);
@@ -17,6 +18,8 @@ const FamilyDashboard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!profile?.id) return;
+
       // Fetch patient information
       const { data: familyData, error: familyError } = await supabase
         .from("patient_family")
@@ -24,8 +27,8 @@ const FamilyDashboard = () => {
           patient_id,
           patients (*)
         `)
-        .eq("family_member_id", profile?.id)
-        .single();
+        .eq("family_member_id", profile.id)
+        .maybeSingle();
 
       if (familyError) {
         toast({
@@ -75,61 +78,93 @@ const FamilyDashboard = () => {
       }
     };
 
-    if (profile?.id) {
-      fetchData();
-    }
+    fetchData();
   }, [profile, toast]);
 
   if (!patient) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-secondary">
         <Header />
         <main className="container mx-auto px-4 pt-24">
-          <h1 className="text-3xl font-bold mb-8">Loading...</h1>
+          <div className="text-center">
+            <h1 className="text-3xl font-bold mb-4">Loading...</h1>
+          </div>
         </main>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-secondary">
       <Header />
       <main className="container mx-auto px-4 pt-24">
         <h1 className="text-3xl font-bold mb-8">Family Portal</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <DashboardCard title="Patient Information">
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold">
-                {patient.first_name} {patient.last_name}
-              </h3>
-              <p className="text-muted-foreground">
-                Admission Date: {new Date(patient.admission_date).toLocaleDateString()}
-              </p>
-              <Button onClick={() => navigate("/family/patient")}>
-                View Details
-              </Button>
+          <DashboardCard 
+            title="Patient Information"
+            variant="gradient"
+          >
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-white/20 rounded-full">
+                <User size={24} />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold">
+                  {patient.first_name} {patient.last_name}
+                </h3>
+                <p className="text-sm opacity-80">
+                  Admission: {new Date(patient.admission_date).toLocaleDateString()}
+                </p>
+              </div>
             </div>
+            <Button 
+              onClick={() => navigate("/family/patient")}
+              variant="secondary"
+              className="w-full mt-4"
+            >
+              View Details
+            </Button>
           </DashboardCard>
 
-          <DashboardCard title="Recent Progress">
-            <div className="space-y-4">
-              <p className="text-2xl font-semibold">{recentProgress.length}</p>
-              <p className="text-muted-foreground">Recent Updates</p>
-              <Button onClick={() => navigate("/family/progress")}>
-                View Progress
-              </Button>
+          <DashboardCard 
+            title="Recent Progress"
+            variant="outline"
+          >
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-primary/10 rounded-full">
+                <ClipboardList size={24} className="text-primary" />
+              </div>
+              <div>
+                <p className="text-2xl font-semibold">{recentProgress.length}</p>
+                <p className="text-sm text-gray-500">Recent Updates</p>
+              </div>
             </div>
+            <Button 
+              onClick={() => navigate("/family/progress")}
+              className="w-full mt-4"
+            >
+              View Progress
+            </Button>
           </DashboardCard>
 
           <DashboardCard title="Upcoming Activities">
-            <div className="space-y-4">
-              <p className="text-2xl font-semibold">{upcomingActivities.length}</p>
-              <p className="text-muted-foreground">Scheduled Activities</p>
-              <Button onClick={() => navigate("/family/schedule")}>
-                View Schedule
-              </Button>
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-primary/10 rounded-full">
+                <Calendar size={24} className="text-primary" />
+              </div>
+              <div>
+                <p className="text-2xl font-semibold">{upcomingActivities.length}</p>
+                <p className="text-sm text-gray-500">Scheduled Activities</p>
+              </div>
             </div>
+            <Button 
+              onClick={() => navigate("/family/schedule")}
+              variant="outline"
+              className="w-full mt-4"
+            >
+              View Schedule
+            </Button>
           </DashboardCard>
         </div>
       </main>
