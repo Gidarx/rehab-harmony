@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -13,12 +14,14 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [showVerificationAlert, setShowVerificationAlert] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setShowVerificationAlert(false);
 
     try {
       if (isLogin) {
@@ -28,7 +31,9 @@ const Auth = () => {
         });
         if (error) {
           if (error.message === "Invalid login credentials") {
-            throw new Error("Invalid email or password. Please try again.");
+            throw new Error(
+              "Invalid email or password. If you just signed up, please check your email for verification."
+            );
           }
           throw error;
         }
@@ -38,7 +43,7 @@ const Auth = () => {
           throw new Error("Password must be at least 6 characters long");
         }
         
-        const { error } = await supabase.auth.signUp({
+        const { error, data } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -49,12 +54,23 @@ const Auth = () => {
             },
           },
         });
+        
         if (error) throw error;
-        toast({
-          title: "Registration successful!",
-          description: "Please check your email to verify your account.",
-        });
-        setIsLogin(true);
+
+        // Check if email confirmation is required
+        if (data?.user && data?.session === null) {
+          setShowVerificationAlert(true);
+          toast({
+            title: "Check your email",
+            description: "Please check your email to verify your account before logging in.",
+          });
+        } else {
+          toast({
+            title: "Registration successful!",
+            description: "Your account has been created.",
+          });
+          setIsLogin(true);
+        }
       }
     } catch (error: any) {
       toast({
@@ -80,6 +96,14 @@ const Auth = () => {
               : "Sign up to start managing your rehabilitation center"}
           </p>
         </div>
+
+        {showVerificationAlert && (
+          <Alert>
+            <AlertDescription>
+              Please check your email to verify your account before logging in.
+            </AlertDescription>
+          </Alert>
+        )}
 
         <form onSubmit={handleAuth} className="mt-8 space-y-6">
           {!isLogin && (
@@ -154,7 +178,10 @@ const Auth = () => {
           <div className="text-center">
             <button
               type="button"
-              onClick={() => setIsLogin(!isLogin)}
+              onClick={() => {
+                setIsLogin(!isLogin);
+                setShowVerificationAlert(false);
+              }}
               className="text-sm text-primary hover:underline"
             >
               {isLogin
