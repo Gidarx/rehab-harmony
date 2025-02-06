@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Search, Calendar } from "lucide-react";
+import { Search, Calendar, UserPlus } from "lucide-react";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 
@@ -63,6 +63,10 @@ const PatientsPage = () => {
               className="pl-10"
             />
           </div>
+          <Button onClick={() => navigate("/staff/patients/new")}>
+            <UserPlus className="w-4 h-4 mr-2" />
+            Add Patient
+          </Button>
         </div>
       </div>
 
@@ -97,10 +101,15 @@ const PatientsPage = () => {
                       className={`px-2 py-1 rounded-full text-xs font-semibold ${
                         patient.status === "active"
                           ? "bg-green-100 text-green-800"
+                          : patient.status === "on_leave"
+                          ? "bg-yellow-100 text-yellow-800"
                           : "bg-gray-100 text-gray-800"
                       }`}
                     >
-                      {patient.status}
+                      {patient.status === "on_leave"
+                        ? "On Leave"
+                        : patient.status.charAt(0).toUpperCase() +
+                          patient.status.slice(1)}
                     </span>
                   </TableCell>
                   <TableCell>

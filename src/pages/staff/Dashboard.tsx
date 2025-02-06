@@ -8,6 +8,7 @@ import DashboardCard from "@/components/DashboardCard";
 import Header from "@/components/Header";
 import PatientsPage from "./patients";
 import PatientDetailsPage from "./patients/[id]";
+import NewPatientPage from "./patients/new";
 
 const StaffDashboard = () => {
   const [activities, setActivities] = useState([]);
@@ -126,6 +127,7 @@ const StaffDashboard = () => {
           }
         />
         <Route path="/patients" element={<PatientsPage />} />
+        <Route path="/patients/new" element={<NewPatientPage />} />
         <Route path="/patients/:id" element={<PatientDetailsPage />} />
       </Routes>
     </div>
