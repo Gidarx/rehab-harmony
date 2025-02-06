@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 const Auth = () => {
@@ -26,9 +26,18 @@ const Auth = () => {
           email,
           password,
         });
-        if (error) throw error;
+        if (error) {
+          if (error.message === "Invalid login credentials") {
+            throw new Error("Invalid email or password. Please try again.");
+          }
+          throw error;
+        }
         navigate("/");
       } else {
+        if (password.length < 6) {
+          throw new Error("Password must be at least 6 characters long");
+        }
+        
         const { error } = await supabase.auth.signUp({
           email,
           password,
@@ -83,6 +92,7 @@ const Auth = () => {
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   required
+                  placeholder="John"
                 />
               </div>
               <div className="space-y-2">
@@ -93,6 +103,7 @@ const Auth = () => {
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   required
+                  placeholder="Doe"
                 />
               </div>
             </div>
@@ -106,6 +117,7 @@ const Auth = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              placeholder="you@example.com"
             />
           </div>
 
@@ -117,10 +129,21 @@ const Auth = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              placeholder="••••••••"
+              minLength={6}
             />
+            {!isLogin && (
+              <p className="text-sm text-muted-foreground">
+                Password must be at least 6 characters long
+              </p>
+            )}
           </div>
 
-          <Button className="w-full" type="submit" disabled={isLoading}>
+          <Button 
+            className="w-full" 
+            type="submit" 
+            disabled={isLoading}
+          >
             {isLoading
               ? "Loading..."
               : isLogin
