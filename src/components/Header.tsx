@@ -1,36 +1,55 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "./AuthProvider";
 import { Button } from "./ui/button";
+import { Users, Calendar, ChartLine } from "lucide-react";
 
 const Header = () => {
-  const { profile, signOut } = useAuth();
+  const { signOut, profile } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
 
   return (
-    <header className="fixed top-0 w-full bg-white/80 backdrop-blur-md border-b border-secondary-dark/10 z-50">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to="/" className="text-xl font-semibold text-primary hover:text-primary-dark transition-colors">
-          RehabCare
-        </Link>
-        <nav className="hidden md:flex space-x-6">
-          <Link to="/patients" className="text-text-light hover:text-primary transition-colors">Patients</Link>
-          <Link to="/staff" className="text-text-light hover:text-primary transition-colors">Staff</Link>
-          <Link to="/treatments" className="text-text-light hover:text-primary transition-colors">Treatments</Link>
-          <Link to="/communication" className="text-text-light hover:text-primary transition-colors">Family Portal</Link>
-        </nav>
-        {profile ? (
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background border-b">
+      <div className="container mx-auto px-4">
+        <div className="flex h-16 items-center justify-between">
+          <div className="flex items-center gap-6">
+            <Link to="/" className="text-xl font-bold">
+              Patient Care
+            </Link>
+            {profile?.role === "staff" && (
+              <nav className="hidden md:flex items-center gap-4">
+                <Link
+                  to="/staff/patients"
+                  className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+                >
+                  <Users className="w-4 h-4" />
+                  Patients
+                </Link>
+                <Link
+                  to="/staff/activities"
+                  className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+                >
+                  <Calendar className="w-4 h-4" />
+                  Activities
+                </Link>
+                <Link
+                  to="/staff/progress"
+                  className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+                >
+                  <ChartLine className="w-4 h-4" />
+                  Progress
+                </Link>
+              </nav>
+            )}
+          </div>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-600">
-              {profile.first_name} {profile.last_name}
-            </span>
-            <Button onClick={signOut} variant="outline">
-              Sign out
+            <Button onClick={handleSignOut} variant="outline">
+              Sign Out
             </Button>
           </div>
-        ) : (
-          <Link to="/auth">
-            <Button>Sign in</Button>
-          </Link>
-        )}
+        </div>
       </div>
     </header>
   );

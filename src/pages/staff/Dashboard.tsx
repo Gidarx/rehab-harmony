@@ -9,6 +9,10 @@ import Header from "@/components/Header";
 import PatientsPage from "./patients";
 import PatientDetailsPage from "./patients/[id]";
 import NewPatientPage from "./patients/new";
+import ActivitiesPage from "./activities";
+import NewActivityPage from "./activities/new";
+import ProgressPage from "./progress";
+import NewProgressPage from "./progress/new";
 
 const StaffDashboard = () => {
   const [activities, setActivities] = useState([]);
@@ -129,6 +133,10 @@ const StaffDashboard = () => {
         <Route path="/patients" element={<PatientsPage />} />
         <Route path="/patients/new" element={<NewPatientPage />} />
         <Route path="/patients/:id" element={<PatientDetailsPage />} />
+        <Route path="/activities" element={<ActivitiesPage />} />
+        <Route path="/activities/new" element={<NewActivityPage />} />
+        <Route path="/progress" element={<ProgressPage />} />
+        <Route path="/progress/new" element={<NewProgressPage />} />
       </Routes>
     </div>
   );
