@@ -12,6 +12,11 @@
   h1, h2, h3, h4, h5, h6 {
     @apply font-semibold tracking-tight;
   }
+
+  /* Add padding to main content to prevent header overlap */
+  main {
+    @apply pt-16;
+  }
 }
 
 @layer components {
