@@ -32,8 +32,8 @@ const PatientsPage = () => {
       if (error) {
         toast({
           variant: "destructive",
-          title: "Error",
-          description: "Failed to load patients",
+          title: "Erro",
+          description: "Falha ao carregar pacientes",
         });
         throw error;
       }
@@ -49,15 +49,15 @@ const PatientsPage = () => {
   );
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-24">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Patients</h1>
+        <h1 className="text-2xl font-bold">Pacientes</h1>
         <div className="flex gap-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <Input
               type="text"
-              placeholder="Search patients..."
+              placeholder="Buscar pacientes..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -65,23 +65,23 @@ const PatientsPage = () => {
           </div>
           <Button onClick={() => navigate("/staff/patients/new")}>
             <UserPlus className="w-4 h-4 mr-2" />
-            Add Patient
+            Adicionar Paciente
           </Button>
         </div>
       </div>
 
       {isLoading ? (
-        <div className="text-center py-8">Loading patients...</div>
+        <div className="text-center py-8">Carregando pacientes...</div>
       ) : (
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Date of Birth</TableHead>
-                <TableHead>Admission Date</TableHead>
+                <TableHead>Nome</TableHead>
+                <TableHead>Data de Nascimento</TableHead>
+                <TableHead>Data de Admissão</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead>Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -91,10 +91,10 @@ const PatientsPage = () => {
                     {patient.first_name} {patient.last_name}
                   </TableCell>
                   <TableCell>
-                    {format(new Date(patient.date_of_birth), "MMM d, yyyy")}
+                    {format(new Date(patient.date_of_birth), "dd/MM/yyyy")}
                   </TableCell>
                   <TableCell>
-                    {format(new Date(patient.admission_date), "MMM d, yyyy")}
+                    {format(new Date(patient.admission_date), "dd/MM/yyyy")}
                   </TableCell>
                   <TableCell>
                     <span
@@ -106,10 +106,11 @@ const PatientsPage = () => {
                           : "bg-gray-100 text-gray-800"
                       }`}
                     >
-                      {patient.status === "on_leave"
-                        ? "On Leave"
-                        : patient.status.charAt(0).toUpperCase() +
-                          patient.status.slice(1)}
+                      {patient.status === "active"
+                        ? "Ativo"
+                        : patient.status === "on_leave"
+                        ? "Em Licença"
+                        : "Inativo"}
                     </span>
                   </TableCell>
                   <TableCell>
@@ -118,7 +119,7 @@ const PatientsPage = () => {
                         size="sm"
                         onClick={() => navigate(`/staff/patients/${patient.id}`)}
                       >
-                        View Details
+                        Ver Detalhes
                       </Button>
                       <Button
                         size="sm"
@@ -128,7 +129,7 @@ const PatientsPage = () => {
                         }
                       >
                         <Calendar className="w-4 h-4 mr-1" />
-                        Activities
+                        Atividades
                       </Button>
                     </div>
                   </TableCell>
