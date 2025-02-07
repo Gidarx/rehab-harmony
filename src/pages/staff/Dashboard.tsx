@@ -19,9 +19,12 @@ const StaffDashboard = () => {
   const [patients, setPatients] = useState([]);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { session } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!session?.user?.id) return;
+
       // Fetch today's activities
       const { data: activitiesData, error: activitiesError } = await supabase
         .from("activities")
@@ -34,6 +37,7 @@ const StaffDashboard = () => {
         .order("scheduled_date", { ascending: true });
 
       if (activitiesError) {
+        console.error("Error fetching activities:", activitiesError);
         toast({
           variant: "destructive",
           title: "Error",
@@ -50,6 +54,7 @@ const StaffDashboard = () => {
         .eq("status", "active");
 
       if (patientsError) {
+        console.error("Error fetching patients:", patientsError);
         toast({
           variant: "destructive",
           title: "Error",
@@ -61,7 +66,7 @@ const StaffDashboard = () => {
     };
 
     fetchData();
-  }, [toast]);
+  }, [session?.user?.id, toast]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -112,17 +117,17 @@ const StaffDashboard = () => {
                 <DashboardCard title="Quick Actions">
                   <div className="space-y-4">
                     <Button
-                      onClick={() => navigate("/staff/activities/complete")}
+                      onClick={() => navigate("/staff/patients/new")}
                       className="w-full"
                     >
-                      Complete Activities
+                      Add New Patient
                     </Button>
                     <Button
-                      onClick={() => navigate("/staff/schedule")}
+                      onClick={() => navigate("/staff/activities/new")}
                       variant="outline"
                       className="w-full"
                     >
-                      View Schedule
+                      Schedule Activity
                     </Button>
                   </div>
                 </DashboardCard>
