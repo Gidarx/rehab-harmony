@@ -7,29 +7,29 @@ const ActivitiesPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-24">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Scheduled Activities</h1>
+        <h1 className="text-2xl font-bold">Atividades Agendadas</h1>
         <Button onClick={() => navigate("/staff/activities/new")}>
           <Plus className="w-4 h-4 mr-2" />
-          Schedule Activity
+          Agendar Atividade
         </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <DashboardCard title="Today's Activities">
-          <p className="text-muted-foreground">No activities scheduled for today</p>
+        <DashboardCard title="Atividades de Hoje">
+          <p className="text-muted-foreground">Nenhuma atividade agendada para hoje</p>
         </DashboardCard>
 
-        <DashboardCard title="Upcoming Activities">
-          <p className="text-muted-foreground">No upcoming activities</p>
+        <DashboardCard title="Próximas Atividades">
+          <p className="text-muted-foreground">Nenhuma atividade futura</p>
         </DashboardCard>
 
-        <DashboardCard title="Quick Actions">
+        <DashboardCard title="Ações Rápidas">
           <div className="space-y-4">
             <Button variant="outline" className="w-full" onClick={() => navigate("/staff/activities/calendar")}>
               <Calendar className="w-4 h-4 mr-2" />
-              View Calendar
+              Ver Calendário
             </Button>
           </div>
         </DashboardCard>

@@ -18,10 +18,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
-  name: z.string().min(2, "Activity name must be at least 2 characters"),
+  name: z.string().min(2, "O nome da atividade deve ter pelo menos 2 caracteres"),
   description: z.string().optional(),
-  scheduled_date: z.string().min(1, "Scheduled date is required"),
-  patient_id: z.string().uuid("Invalid patient ID"),
+  scheduled_date: z.string().min(1, "A data de agendamento é obrigatória"),
+  patient_id: z.string().uuid("ID do paciente inválido"),
 });
 
 const NewActivityPage = () => {
@@ -46,18 +46,18 @@ const NewActivityPage = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-24">
       <Button
         variant="ghost"
         className="mb-6"
         onClick={() => navigate("/staff/activities")}
       >
         <ArrowLeft className="w-4 h-4 mr-2" />
-        Back to Activities
+        Voltar para Atividades
       </Button>
 
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-2xl font-bold mb-6">Schedule New Activity</h1>
+        <h1 className="text-2xl font-bold mb-6">Agendar Nova Atividade</h1>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -66,7 +66,7 @@ const NewActivityPage = () => {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Activity Name</FormLabel>
+                  <FormLabel>Nome da Atividade</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
@@ -80,7 +80,7 @@ const NewActivityPage = () => {
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description (Optional)</FormLabel>
+                  <FormLabel>Descrição (Opcional)</FormLabel>
                   <FormControl>
                     <Textarea {...field} />
                   </FormControl>
@@ -94,7 +94,7 @@ const NewActivityPage = () => {
               name="scheduled_date"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Scheduled Date</FormLabel>
+                  <FormLabel>Data Agendada</FormLabel>
                   <FormControl>
                     <Input type="datetime-local" {...field} />
                   </FormControl>
@@ -109,11 +109,11 @@ const NewActivityPage = () => {
                 variant="outline"
                 onClick={() => navigate("/staff/activities")}
               >
-                Cancel
+                Cancelar
               </Button>
               <Button type="submit" disabled={isSubmitting}>
                 <Save className="w-4 h-4 mr-2" />
-                {isSubmitting ? "Scheduling..." : "Schedule Activity"}
+                {isSubmitting ? "Agendando..." : "Agendar Atividade"}
               </Button>
             </div>
           </form>

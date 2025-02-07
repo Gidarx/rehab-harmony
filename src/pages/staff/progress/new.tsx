@@ -18,9 +18,9 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
-  notes: z.string().min(10, "Progress notes must be at least 10 characters"),
-  patient_id: z.string().uuid("Invalid patient ID"),
-  session_date: z.string().min(1, "Session date is required"),
+  notes: z.string().min(10, "As notas de progresso devem ter pelo menos 10 caracteres"),
+  patient_id: z.string().uuid("ID do paciente inválido"),
+  session_date: z.string().min(1, "A data da sessão é obrigatória"),
 });
 
 const NewProgressPage = () => {
@@ -44,18 +44,18 @@ const NewProgressPage = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-24">
       <Button
         variant="ghost"
         className="mb-6"
         onClick={() => navigate("/staff/progress")}
       >
         <ArrowLeft className="w-4 h-4 mr-2" />
-        Back to Progress Notes
+        Voltar para Notas de Progresso
       </Button>
 
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-2xl font-bold mb-6">Add Progress Note</h1>
+        <h1 className="text-2xl font-bold mb-6">Adicionar Nota de Progresso</h1>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -64,11 +64,11 @@ const NewProgressPage = () => {
               name="notes"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Progress Notes</FormLabel>
+                  <FormLabel>Notas de Progresso</FormLabel>
                   <FormControl>
                     <Textarea
                       {...field}
-                      placeholder="Enter detailed notes about the patient's progress..."
+                      placeholder="Digite notas detalhadas sobre o progresso do paciente..."
                       className="min-h-[200px]"
                     />
                   </FormControl>
@@ -82,7 +82,7 @@ const NewProgressPage = () => {
               name="session_date"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Session Date</FormLabel>
+                  <FormLabel>Data da Sessão</FormLabel>
                   <FormControl>
                     <Input type="date" {...field} />
                   </FormControl>
@@ -97,11 +97,11 @@ const NewProgressPage = () => {
                 variant="outline"
                 onClick={() => navigate("/staff/progress")}
               >
-                Cancel
+                Cancelar
               </Button>
               <Button type="submit" disabled={isSubmitting}>
                 <Save className="w-4 h-4 mr-2" />
-                {isSubmitting ? "Saving..." : "Save Progress Note"}
+                {isSubmitting ? "Salvando..." : "Salvar Nota de Progresso"}
               </Button>
             </div>
           </form>

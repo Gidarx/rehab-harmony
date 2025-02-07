@@ -7,27 +7,27 @@ const ProgressPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-24">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Patient Progress</h1>
+        <h1 className="text-2xl font-bold">Progresso do Paciente</h1>
         <Button onClick={() => navigate("/staff/progress/new")}>
           <Plus className="w-4 h-4 mr-2" />
-          Add Progress Note
+          Adicionar Nota de Progresso
         </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <DashboardCard title="Recent Progress Notes">
-          <p className="text-muted-foreground">No recent progress notes</p>
+        <DashboardCard title="Notas de Progresso Recentes">
+          <p className="text-muted-foreground">Nenhuma nota de progresso recente</p>
         </DashboardCard>
 
-        <DashboardCard title="Progress Overview">
+        <DashboardCard title="Visão Geral do Progresso">
           <div className="flex items-center gap-4">
             <div className="p-3 bg-primary/10 rounded-full">
               <ChartLine className="w-6 h-6 text-primary" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Progress tracking will be implemented soon</p>
+              <p className="text-sm text-muted-foreground">O acompanhamento do progresso será implementado em breve</p>
             </div>
           </div>
         </DashboardCard>
