@@ -1,3 +1,4 @@
+
 import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
@@ -14,7 +15,7 @@ const DashboardCard = ({
   className = "",
   variant = "default" 
 }: DashboardCardProps) => {
-  const baseStyles = "card transition-all duration-300 hover:scale-[1.02] hover:shadow-lg";
+  const baseStyles = "rounded-xl shadow-sm border border-secondary-dark/10 p-6 transition-all duration-300 hover:shadow-lg";
   
   const variantStyles = {
     default: "bg-white",
