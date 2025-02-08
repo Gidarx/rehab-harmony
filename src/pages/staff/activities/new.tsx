@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -16,6 +17,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 const formSchema = z.object({
   name: z.string().min(2, "O nome da atividade deve ter pelo menos 2 caracteres"),
@@ -29,6 +32,21 @@ const NewActivityPage = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Buscar lista de pacientes ativos
+  const { data: patients, isLoading: isLoadingPatients } = useQuery({
+    queryKey: ["active-patients"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("patients")
+        .select("id, first_name, last_name")
+        .eq("status", "active")
+        .order("first_name");
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,9 +58,36 @@ const NewActivityPage = () => {
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    setIsSubmitting(true);
-    // Implementation will be added later
-    setIsSubmitting(false);
+    try {
+      setIsSubmitting(true);
+      
+      const { error } = await supabase
+        .from("activities")
+        .insert({
+          name: data.name,
+          description: data.description || null,
+          scheduled_date: new Date(data.scheduled_date).toISOString(),
+          patient_id: data.patient_id,
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Sucesso!",
+        description: "Atividade agendada com sucesso.",
+      });
+      
+      navigate("/staff/activities");
+    } catch (error) {
+      console.error("Erro ao agendar atividade:", error);
+      toast({
+        variant: "destructive",
+        title: "Erro",
+        description: "Ocorreu um erro ao agendar a atividade. Tente novamente.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -63,12 +108,37 @@ const NewActivityPage = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
+              name="patient_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Paciente</FormLabel>
+                  <FormControl>
+                    <select
+                      {...field}
+                      className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                      disabled={isLoadingPatients}
+                    >
+                      <option value="">Selecione um paciente</option>
+                      {patients?.map((patient) => (
+                        <option key={patient.id} value={patient.id}>
+                          {patient.first_name} {patient.last_name}
+                        </option>
+                      ))}
+                    </select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Nome da Atividade</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} placeholder="Ex: Sessão de Fisioterapia" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -82,7 +152,11 @@ const NewActivityPage = () => {
                 <FormItem>
                   <FormLabel>Descrição (Opcional)</FormLabel>
                   <FormControl>
-                    <Textarea {...field} />
+                    <Textarea 
+                      {...field} 
+                      placeholder="Detalhes sobre a atividade..."
+                      className="min-h-[100px]"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -94,9 +168,13 @@ const NewActivityPage = () => {
               name="scheduled_date"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Data Agendada</FormLabel>
+                  <FormLabel>Data e Hora</FormLabel>
                   <FormControl>
-                    <Input type="datetime-local" {...field} />
+                    <Input 
+                      type="datetime-local" 
+                      {...field}
+                      min={new Date().toISOString().slice(0, 16)}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -111,7 +189,7 @@ const NewActivityPage = () => {
               >
                 Cancelar
               </Button>
-              <Button type="submit" disabled={isSubmitting}>
+              <Button type="submit" disabled={isSubmitting || isLoadingPatients}>
                 <Save className="w-4 h-4 mr-2" />
                 {isSubmitting ? "Agendando..." : "Agendar Atividade"}
               </Button>
