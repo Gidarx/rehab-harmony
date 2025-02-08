@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -20,22 +21,22 @@ export default {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#6B8E76",
-          light: "#8BA894",
-          dark: "#567661",
+          DEFAULT: "#0EA5E9", // Ocean Blue
+          light: "#38BDF8",   // Light Blue
+          dark: "#0284C7",    // Dark Blue
         },
         secondary: {
-          DEFAULT: "#F5F5F5",
-          dark: "#E0E0E0",
+          DEFAULT: "#F8FAFC", // Light Gray/White
+          dark: "#F1F5F9",    // Slightly Darker Gray
         },
         accent: {
-          DEFAULT: "#E8877E",
-          light: "#F0A39B",
-          dark: "#D66B61",
+          DEFAULT: "#F59E0B", // Golden
+          light: "#FCD34D",   // Light Gold
+          dark: "#D97706",    // Dark Gold
         },
         text: {
-          DEFAULT: "#2D3436",
-          light: "#4A5568",
+          DEFAULT: "#1E293B", // Dark Blue-Gray
+          light: "#64748B",   // Medium Blue-Gray
         },
       },
       fontFamily: {
